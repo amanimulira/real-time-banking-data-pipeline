@@ -1,0 +1,32 @@
+banking_dbt:
+  outputs:
+    dev:
+      account: IWRSVMG-AWS_AMANI
+      authenticator: snowflake_jwt
+      database: BANKING
+      password: gykzac=vucwug=9Pudgu
+      private_key_passphrase: Miriam@123
+      private_key_path: /home/airflow/.ssh/rsa_key.p8
+      role: ACCOUNTADMIN
+      schema: analytics
+      threads: 1
+      type: snowflake
+      user: AMANIMULRIA
+      warehouse: X_SMALL_WAREHOUSE_DBT
+  target: dev
+snowflake_dbt_project:
+  outputs:
+    dev:
+      account: IWRSVMG-AWS_AMANI
+      authenticator: snowflake_jwt
+      database: AIRBNB
+      password: gykzac=vucwug=9Pudgu
+      private_key_passphrase: Miriam@123
+      private_key_path: /home/airflow/.ssh/rsa_key.p8
+      role: SYSADMIN
+      schema: dbt_schema
+      threads: 1
+      type: snowflake
+      user: AMANIMULRIA
+      warehouse: X_SMALL_WAREHOUSE_DBT
+  target: dev
