@@ -2,7 +2,7 @@
 
 A production-grade, end-to-end data engineering platform that captures banking transactions in real time using Change Data Capture (CDC), streams them through Kafka, lands them as Parquet in S3-compatible object storage, loads into Snowflake, and transforms them with dbt into analytics-ready dimensional models with full SCD Type-2 history tracking.
 
-![Architecture Diagram](docs/architecture.png)
+![Architecture Diagram](docs/architecture.jpg)
 
 ---
 

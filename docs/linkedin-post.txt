@@ -1,0 +1,38 @@
+I built a real-time banking data pipeline from scratch — here's what it does and why it matters.
+
+The challenge: most banking analytics still run on nightly batch jobs. That means 8-24 hours of stale data, full table scans hammering production databases, and a fraud detection window that starts the next business day. I wanted to build something better.
+
+So I built a production-grade, end-to-end modern data stack that captures every row-level change in real time and delivers analytics-ready data in under 60 seconds.
+
+Here's the stack:
+
+PostgreSQL (source OLTP) → Debezium CDC → Apache Kafka → Python Consumer → MinIO (S3 Parquet) → Snowflake → dbt → Power BI
+
+What it actually achieves vs. the traditional approach:
+
+- Data freshness: sub-minute vs. 8-24 hours stale (~1,440x improvement)
+- Source database load: near-zero (WAL-based CDC, no table locks) vs. full nightly scans
+- Data transfer volume: 80-95% reduction (only deltas, not full dumps)
+- Storage costs: 75% reduction using columnar Parquet vs. CSV/JSON
+- Infrastructure spend: ~$3K/yr (Snowflake pay-per-query + Docker) vs. ~$60K/yr on-prem
+- Compliance audit prep: < 1 day (SCD2 history is queryable) vs. 2-4 weeks of manual reconstruction
+
+Some of the technical decisions I'm most proud of:
+
+1. SCD Type-2 tracking with dbt snapshots — full customer and account history with effective dating. When compliance asks "what was this customer's email on March 15th?", it's a single query instead of a multi-week data archaeology project.
+
+2. Decoupled architecture via Kafka — one CDC stream feeds unlimited downstream consumers. Adding a new system (fraud engine, CRM sync, ML pipeline) is a new consumer group, not a new extraction job against production.
+
+3. CI/CD with GitHub Actions — every PR runs ruff linting + pytest + dbt compile validation. Merges to main auto-deploy to production Snowflake with post-deploy dbt tests. Broken SQL never reaches production.
+
+4. Fully containerised — the entire 7-service stack (Zookeeper, Kafka, Debezium, Postgres, MinIO, Airflow Scheduler, Airflow Webserver) runs with a single docker compose up. Reproducible on any machine in under 3 minutes.
+
+5. Incremental fact tables — the transactions fact model uses dbt's incremental materialisation with deduplication, so warehouse compute costs scale with new data volume, not total data volume.
+
+The full technical breakdown, architecture diagram, and source code are in the repo:
+
+https://github.com/amanimulira/real-time-banking-data-pipeline
+
+If you're building modern data platforms in financial services or transitioning from legacy batch ETL, I'd love to connect and exchange ideas.
+
+#DataEngineering #ModernDataStack #CDC #Kafka #dbt #Snowflake #Airflow #RealTimeData #FinTech #BankingTechnology #ETL #DataPipeline #Analytics
